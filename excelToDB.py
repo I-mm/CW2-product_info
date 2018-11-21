@@ -3,8 +3,8 @@
 
 import xlrd
 import pymysql
-from datetime import datetime
-from xlrd import xldate_as_tuple
+# from datetime import datetime
+# from xlrd import xldate_as_tuple
 
 data = xlrd.open_workbook("2CW-20181111.xlsx")
 table_one = data.sheet_by_index(0)  # 根据sheet索引获取sheet的内容
@@ -74,15 +74,15 @@ for i in range(1, nrows):
         unit = "'" + str(table_one.cell_value(i, 7)) + "'"
     else:
         unit = "null"
-    if table_one.cell_value(i, 8) != "":
-        specification = "'" +  table_one.cell_value(i, 8) + "'"
+    if table_one.cell_value(i, 8) != "" and table_one.cell_value(i, 8) != "NULL":
+        specification = "'" + table_one.cell_value(i, 8) + "'"
     else:
         specification = "null"
     try:
         lowestRetailPrice = float(table_one.cell_value(i, 9))
     except:
         lowestRetailPrice = "null"
-    productNature =  "'" + table_one.cell_value(i, 10) + "'"
+    productNature = "'" + table_one.cell_value(i, 10) + "'"
 
     try:
         if int(table_one.cell_value(i, 11)) == 0:
@@ -91,7 +91,7 @@ for i in range(1, nrows):
             warrantyPeriod = "'" + str(table_one.cell_value(i, 11)) + "'"
     except:
         warrantyPeriod = "null"
-    distributionMethod = "'" +  table_one.cell_value(i, 12) + "'"
+    distributionMethod = "'" + table_one.cell_value(i, 12) + "'"
     try:
         estimatedDaysOfUse = int(table_one.cell_value(i, 13))
     except:
