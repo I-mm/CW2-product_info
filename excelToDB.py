@@ -24,11 +24,11 @@ sql_createTb = """CREATE TABLE product_info (
                  retailPrice float ,
                  unit varchar(10),
                  specification varchar(20),
-                 lowestRetailPrice varchar(10),
+                 lowestRetailPrice float,
                  productNature varchar(15),
-                 warrantyPeriod varchar(10),
+                 warrantyPeriod int,
                  distributionMethod varchar(10),
-                 estimatedDaysOfUse varchar(10),
+                 estimatedDaysOfUse int,
                  grossProfitMargin float )CHARSET=utf8 COLLATE=utf8_bin;
                  """
 
@@ -51,21 +51,31 @@ else:
 colName = table_one.row_values(0)
 
 for i in range(1, nrows):
-    lineNum = int(table_one.cell_value(i, 0))
+    # ('{}', '{}', {}, '{}', {}, {}, '{}', '{}', {}, '{}', '{}', '{}', '{}', {})
+    lineNum = table_one.cell_value(i, 0)
     barcode = table_one.cell_value(i, 1)
     sellType = table_one.cell_value(i, 2)
-    wholesalePrice = float(table_one.cell_value(1, 3))
+    wholesalePrice = table_one.cell_value(1, 3)
     productName = table_one.cell_value(i, 4)
-    referencePurchasePrice = float(table_one.cell_value(i, 5))
-    retailPrice = float(table_one.cell_value(i, 6))
+    referencePurchasePrice = table_one.cell_value(i, 5)
+    retailPrice = table_one.cell_value(i, 6)
     unit = table_one.cell_value(i, 7)
     specification = table_one.cell_value(i, 8)
-    lowestRetailPrice = table_one.cell_value(i, 9)
+    try:
+        lowestRetailPrice = float(table_one.cell_value(i, 9))
+    except:
+        lowestRetailPrice = "null"
     productNature = table_one.cell_value(i, 10)
-    warrantyPeriod = table_one.cell_value(i, 11)
+    try:
+        warrantyPeriod = table_one.cell_value(i, 11)
+    except:
+        warrantyPeriod = "null"
     distributionMethod = table_one.cell_value(i, 12)
-    estimatedDaysOfUse = table_one.cell_value(i, 13)
-    grossProfitMargin = float(table_one.cell_value(i, 14))
+    try:
+        estimatedDaysOfUse = int(table_one.cell_value(i, 13))
+    except:
+        estimatedDaysOfUse = "null"
+    grossProfitMargin = table_one.cell_value(i, 14)
 
     # print(barcode, sellType, wholesalePrice, productName, purchasePrice)
     # print(int(str(estimatedDaysOfUse)))
@@ -73,9 +83,20 @@ for i in range(1, nrows):
     # ('%s', '%s', % f, '%s', % f, % f, '%s', '%s', % f, '%s', % s, '%s', % s, % f)
 
     # 将数据存入数据库
-    sql = "insert into product_info(barcode, sellType, wholesalePrice, productName, referencePurchasePrice,retailPrice,unit,specification,lowestRetailPrice,productNature,warrantyPeriod,distributionMethod, estimatedDaysOfUse,grossProfitMargin) values ('%s','%s', %f, '%s', %f, %f,'%s','%s','%s','%s','%s','%s','%s',%f);" % (
-        barcode, sellType, wholesalePrice, productName, referencePurchasePrice, retailPrice, unit, specification,
-        lowestRetailPrice, productNature, warrantyPeriod, distributionMethod, estimatedDaysOfUse, grossProfitMargin)
+    # sql = "insert into product_info(barcode, sellType, wholesalePrice, productName, referencePurchasePrice,retailPrice,unit,specification,lowestRetailPrice,productNature,warrantyPeriod,distributionMethod, estimatedDaysOfUse,grossProfitMargin) values ('%s','%s', %f, '%s', %f, %f,'%s','%s','%d','%s','%s','%s','%s',%f);" % (
+    #     barcode, sellType, wholesalePrice, productName, referencePurchasePrice, retailPrice, unit, specification,
+    #     lowestRetailPrice, productNature, warrantyPeriod, distributionMethod, estimatedDaysOfUse, grossProfitMargin)
+    sql = "insert into product_info(barcode, sellType, wholesalePrice, productName, referencePurchasePrice,retailPrice,unit,specification,lowestRetailPrice,productNature,warrantyPeriod,distributionMethod, estimatedDaysOfUse,grossProfitMargin) values ('{}','{}', {}, '{}', {}, {},'{}','{}',{},'{}',{},'{}',{},{});".format(
+        barcode, sellType,
+        wholesalePrice, productName,
+        referencePurchasePrice,
+        retailPrice, unit, specification,
+        lowestRetailPrice, productNature,
+        warrantyPeriod,
+        distributionMethod,
+        estimatedDaysOfUse,
+        grossProfitMargin)
+    print(sql)
     try:
         cursor.execute(sql)
     except Exception as e:
