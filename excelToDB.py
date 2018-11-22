@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*
-
+# 插入数据之前做了初步的数据筛选
 
 import xlrd
 import pymysql
+
 # from datetime import datetime
 # from xlrd import xldate_as_tuple
 
@@ -40,25 +41,24 @@ try:
     cursor.execute("DROP TABLE product_info;")
     cursor.execute(sql_createTb)
 except Exception as e:
-    # 发生错误时回滚
     db.rollback()
     print(str(e))
     exit(-1)
 else:
-    print("The original table \"product_info\" has been droped！")
+    print("The original table \"product_info\" has been droped! ")
     print("New table \"product_info\" has been created!")
 
 colName = table_one.row_values(0)
 
 for i in range(1, nrows):
-    # ('{}', '{}', {}, '{}', {}, {}, '{}', '{}', {}, '{}', '{}', '{}', '{}', {})
 
     lineNum = "'" + str(table_one.cell_value(i, 0)) + "'"
-    # remove the row whose length of barcode != 13
-    if len(str(table_one.cell_value(i, 1)).strip()) == 13:
-        barcode = str(table_one.cell_value(i, 1))
+
+    if len(table_one.cell_value(i, 1)) == 13:
+        barcode = table_one.cell_value(i, 1)
     else:
         continue
+
     sellType = "'" + str(table_one.cell_value(i, 2)) + "'"
     wholesalePrice = table_one.cell_value(1, 3)
     if table_one.cell_value(i, 4) != "":
@@ -98,15 +98,7 @@ for i in range(1, nrows):
         estimatedDaysOfUse = "null"
     grossProfitMargin = table_one.cell_value(i, 14)
 
-    # print(barcode, sellType, wholesalePrice, productName, purchasePrice)
-    # print(int(str(estimatedDaysOfUse)))
 
-    # ('%s', '%s', % f, '%s', % f, % f, '%s', '%s', % f, '%s', % s, '%s', % s, % f)
-
-    # 将数据存入数据库
-    # sql = "insert into product_info(barcode, sellType, wholesalePrice, productName, referencePurchasePrice,retailPrice,unit,specification,lowestRetailPrice,productNature,warrantyPeriod,distributionMethod, estimatedDaysOfUse,grossProfitMargin) values ('%s','%s', %f, '%s', %f, %f,'%s','%s','%d','%s','%s','%s','%s',%f);" % (
-    #     barcode, sellType, wholesalePrice, productName, referencePurchasePrice, retailPrice, unit, specification,
-    #     lowestRetailPrice, productNature, warrantyPeriod, distributionMethod, estimatedDaysOfUse, grossProfitMargin)
     sql = "insert into product_info(barcode, sellType, wholesalePrice, productName, referencePurchasePrice,retailPrice,unit,specification,lowestRetailPrice,productNature,warrantyPeriod,distributionMethod, estimatedDaysOfUse,grossProfitMargin) values ({},{},{},{},{},{},{},{},{},{},{},{},{},{});".format(
         barcode, sellType,
         wholesalePrice, productName,
@@ -117,12 +109,10 @@ for i in range(1, nrows):
         distributionMethod,
         estimatedDaysOfUse,
         grossProfitMargin)
-    # print(sql)
-    # print(sql)
+
     try:
         cursor.execute(sql)
     except Exception as e:
-        # 发生错误时回滚
         db.rollback()
         print(str(e))
         exit(-1)
