@@ -1,5 +1,7 @@
 # Coursework 2: Product Info
 
+See this project at [CW2-product_info](https://github.com/I-mm/CW2-product_info). 
+
 - [x] Input the .xlsx file into mysql database.
 - [x] Deal with the unreasonable errors in the table. 
 - [x] Deal with the NULL data.
