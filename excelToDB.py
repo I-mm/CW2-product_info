@@ -4,9 +4,6 @@
 import xlrd
 import pymysql
 
-# from datetime import datetime
-# from xlrd import xldate_as_tuple
-
 data = xlrd.open_workbook("2CW-20181111.xlsx")
 table_one = data.sheet_by_index(0)  # 根据sheet索引获取sheet的内容
 nrows = table_one.nrows
@@ -33,7 +30,6 @@ sql_createTb = """CREATE TABLE product_info (
                  grossProfitMargin float )CHARSET=utf8 COLLATE=utf8_bin;
                  """
 
-# 在 execute里面执行SQL语句
 # cursor.execute("CREATE DATABASE product_info_db;")
 
 cursor.execute("USE product_info_db;")
@@ -117,7 +113,7 @@ for i in range(1, nrows):
         print(str(e))
         exit(-1)
     else:
-        db.commit()  # 事务提交
+        db.commit()  # Transaction submission
         print('Successful insert row ' + str(i) + '! ')
 
 print("============Finished============")
