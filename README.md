@@ -26,6 +26,7 @@ See [excelToDB.py](https://github.com/I-mm/CW2-product_info/blob/master/excelToD
 
 ```python
 db = pymysql.connect(host="39.105.165.114", user="root", password="zym2112!", use_unicode=True, charset="utf8")
+# Not real password here.
 ```
 - Create table product_info:
 
